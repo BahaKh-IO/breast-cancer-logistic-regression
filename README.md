@@ -1,25 +1,20 @@
-🩺 Breast Cancer Wisconsin Classification using Logistic Regression
+# 🩺 Breast Cancer Wisconsin Classification using Logistic Regression
 
 A machine learning project that implements Logistic Regression from scratch using NumPy to classify breast tumors as Malignant (M) or Benign (B) using the Breast Cancer Wisconsin Dataset.
 
-Unlike library-based implementations, this project builds the entire learning algorithm manually, including:
+## Dataset
 
-Sigmoid activation
-Cross-Entropy Loss
-L2 Regularization
-Gradient Computation
-Gradient Descent Optimization
-Prediction Function
-📊 Dataset
+The Breast Cancer Wisconsin Diagnostic Dataset contains 30 numerical features extracted from breast mass images.
 
-The project uses the Breast Cancer Wisconsin Diagnostic Dataset, which contains numerical features extracted from digitized images of breast mass cell nuclei.
+Target labels:
 
-Target Classes
-Label	Meaning
-0	Benign
-1	Malignant
-Features
+| Label | Class |
+|---------|---------|
+| 0 | Benign |
+| 1 | Malignant |
 
+---
+## Features
 The dataset contains 30 numerical features such as:
 
 Radius
@@ -31,356 +26,181 @@ Compactness
 Concavity
 Symmetry
 Fractal Dimension
-🧠 Logistic Regression Model
 
-Logistic Regression estimates the probability that a sample belongs to the positive class:
+## Mathematical Background
 
-P(y=1∣x)=σ(z)
+### 1. Sigmoid Function
 
-where
-
-z=w
-T
-x+b
-
-and
-
-σ(z)=
-1+e
-−z
-1
-	​
-
-⚙️ Functions and Mathematical Formulas
-1. Sigmoid Function
+```python
 def sigmoid(z):
-    return (1/(1+np.exp(-z)))
-Formula
-σ(z)=
-1+e
-−z
-1
-	​
+    return 1/(1+np.exp(-z))
+```
 
-Purpose
+Formula:
 
-Transforms any real-valued number into a probability between 0 and 1.
+σ(z) = 1 / (1 + e^(-z))
 
-2. Cost Function (Cross-Entropy + L2 Regularization)
-def cost(x, y, w, b, lambda_):
-Cross-Entropy Loss
-J(w,b)=−
-m
-1
-	​
+Maps any real number to the interval (0,1).
 
-i=1
-∑
-m
-	​
+---
 
-[y
-(i)
-log(
-y
-^
-	​
+### 2. Logistic Regression Hypothesis
 
-(i)
-)+(1−y
-(i)
-)log(1−
-y
-^
-	​
-
-(i)
-)]
-
-where
-
-y
-^
-	​
-
-=σ(w
-T
-x+b)
-L2 Regularization
-2m
-λ
-	​
-
-j=1
-∑
-n
-	​
-
-w
-j
-2
-	​
-
-Total Cost
-J(w,b)=−
-m
-1
-	​
-
-i=1
-∑
-m
-	​
-
-[y
-(i)
-log(
-y
-^
-	​
-
-(i)
-)+(1−y
-(i)
-)log(1−
-y
-^
-	​
-
-(i)
-)]+
-2m
-λ
-	​
-
-j=1
-∑
-n
-	​
-
-w
-j
-2
-	​
-
-Purpose
-Measures prediction error.
-Penalizes large weights to reduce overfitting.
-3. Gradient Computation
-def gradient(x,y,w,b,lambda_):
-Weight Gradient
-∂w
-j
-	​
-
-∂J
-	​
-
-=
-m
-1
-	​
-
-i=1
-∑
-m
-	​
-
-(
-y
-^
-	​
-
-(i)
-−y
-(i)
-)x
-j
-(i)
-	​
-
-+
-m
-λ
-	​
-
-w
-j
-	​
-
-Bias Gradient
-∂b
-∂J
-	​
-
-=
-m
-1
-	​
-
-i=1
-∑
-m
-	​
-
-(
-y
-^
-	​
-
-(i)
-−y
-(i)
-)
-Purpose
-
-Computes how much each parameter contributes to the prediction error.
-
-4. Gradient Descent
-def gradient_descent(x,y,w,b,alpha,lambda_,iterations):
-Weight Update
-w
-j
-	​
-
-:=w
-j
-	​
-
-−α
-∂w
-j
-	​
-
-∂J
-	​
-
-Bias Update
-b:=b−α
-∂b
-∂J
-	​
-
-
-where
-
-α = learning rate
-Purpose
-
-Iteratively updates parameters to minimize the cost function.
-
-5. Prediction Function
-def predict(x,w,b):
-Probability Computation
-y
-^
-	​
-
-=σ(w
-T
-x+b)
-Decision Rule
-Prediction={
-1
-0
-	​
-
-if 
-y
-^
-	​
-
-≥0.5
-otherwise
-	​
-
-Purpose
-
-Converts probabilities into class labels.
-
-🔄 Data Preprocessing
-
-Feature scaling is applied before training:
-
-x_scaled=(x-np.mean(x))/np.std(x)
-Standardization Formula
-x
-scaled
-	​
-
-=
-σ
-x−μ
-	​
-
+```text
+z = wᵀx + b
+ŷ = σ(z)
+```
 
 where:
 
-μ = mean
-σ = standard deviation
-Why?
+- x = feature vector
+- w = weight vector
+- b = bias
+- ŷ = predicted probability
 
-Standardization helps Gradient Descent converge faster and improves numerical stability.
+---
 
-🚀 Training Configuration
-Parameter	Value
-Learning Rate	0.05
-Regularization λ	1
-Iterations	15000
-Initialization	Zeros
-📈 Training Process
+### 3. Cost Function
 
-During training:
+Cross-Entropy Loss:
 
-Compute predictions using the sigmoid function.
-Calculate cost.
-Compute gradients.
-Update parameters using gradient descent.
-Store cost history for visualization.
+```text
+J = -(1/m) Σ [y log(ŷ) + (1-y) log(1-ŷ)]
+```
 
-The loss curve is plotted to monitor convergence.
+L2 Regularization:
 
-plt.plot(costs)
-🎯 Evaluation
+```text
+(λ/2m) Σ w²
+```
 
-Model performance is measured using classification accuracy:
+Total Cost:
 
-Accuracy=
-Total Predictions
-Correct Predictions
-	​
+```text
+J = CrossEntropy + Regularization
+```
 
-×100
-np.mean(predictions == labels) * 100
+---
 
-Metrics reported:
+### 4. Gradient Computation
 
-Training Accuracy
-Test Accuracy
-🛠️ Technologies Used
-Python
-NumPy
-Pandas
-Matplotlib
-📂 Project Structure
+Weight Gradient:
+
+```text
+∂J/∂w = (1/m) Xᵀ(ŷ - y) + (λ/m)w
+```
+
+Bias Gradient:
+
+```text
+∂J/∂b = (1/m) Σ(ŷ - y)
+```
+
+---
+
+### 5. Gradient Descent Update
+
+Weights:
+
+```text
+w := w - α(∂J/∂w)
+```
+
+Bias:
+
+```text
+b := b - α(∂J/∂b)
+```
+
+where α is the learning rate.
+
+---
+
+### 6. Prediction Rule
+
+```text
+ŷ = σ(wᵀx + b)
+```
+
+Decision:
+
+```text
+If ŷ ≥ 0.5 → Class 1
+Else → Class 0
+```
+
+---
+
+## Data Preprocessing
+
+Standardization:
+
+```text
+x_scaled = (x - μ) / σ
+```
+
+where:
+
+- μ = mean
+- σ = standard deviation
+
+---
+
+## Training Parameters
+
+| Parameter | Value |
+|------------|---------|
+| Learning Rate | 0.05 |
+| Lambda | 1 |
+| Iterations | 2400 |
+
+---
+
+## Results
+
+After training the Logistic Regression model using Gradient Descent with L2 Regularization:
+
+| Metric | Score |
+|---------|---------|
+| Training Accuracy | 90.89% |
+| Test Accuracy | 94.12% |
+
+### Interpretation
+
+- The model successfully generalizes to unseen data, achieving **94.12% accuracy on the test set**.
+- The small difference between training and testing accuracy suggests that the model is not significantly overfitting.
+- L2 Regularization helps improve generalization by preventing excessively large weight values.
+
+```
+Train Accuracy = 90.89%
+Test Accuracy  = 94.12%
+```
+
+---
+
+## Technologies
+
+- Python
+- NumPy
+- Pandas
+- Matplotlib
+
+---
+
+## Project Structure
+
+```text
 ├── Breast Cancer Wisconsin - Logistic Regression.ipynb
 ├── data.csv
 ├── README.md
-📚 Learning Objectives
+```
 
-This project demonstrates:
+---
 
-Logistic Regression from scratch
-Binary Classification
-Cross-Entropy Loss
-L2 Regularization
-Gradient Descent Optimization
-Feature Scaling
-Model Evaluation
-📄 License
+## License
 
 This project is released under the MIT License.
 
-Author
+## Author
 
 Developed as an educational implementation of Logistic Regression to understand the mathematics and optimization process behind binary classification models.
